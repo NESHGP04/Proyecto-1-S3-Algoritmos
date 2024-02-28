@@ -25,10 +25,6 @@ public class LispInterpreter {
         }
     }
 
-    public void performOperation(){
-        System.out.println("El resultado de la operación "+ key + " fue efectuado");
-    }
-
     // public String functionName;
     // public List<String> list;
     // private String var;
