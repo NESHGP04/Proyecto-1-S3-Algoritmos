@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ExecutionContext {
     private Map<String, String> variables = new HashMap<>();
