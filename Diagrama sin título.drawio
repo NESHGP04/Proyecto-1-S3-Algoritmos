@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-02-29T18:41:22.398Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" etag="72uyRvBRr1PPC02L1TxT" version="23.1.8" type="github">
+<mxfile host="app.diagrams.net" modified="2024-02-29T18:51:08.272Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" etag="A0oJiHghlTiObAbMV3P9" version="23.1.8" type="github">
   <diagram name="Página-1" id="lGnF9H1Lcmf4lvGc7-DW">
-    <mxGraphModel dx="1034" dy="517" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="976" dy="574" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -14,16 +14,16 @@
           <mxGeometry y="34" width="160" height="26" as="geometry" />
         </mxCell>
         <mxCell id="ovnq_b6lXp1vGBs1KSgW-4" value="LispInterpreter" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="20" y="220" width="160" height="260" as="geometry" />
+          <mxGeometry x="21" y="220" width="170" height="270" as="geometry" />
         </mxCell>
-        <mxCell id="ovnq_b6lXp1vGBs1KSgW-5" value="- environment: Map&amp;lt;String, Object&amp;gt;&lt;br&gt;+functionName: String&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color);&quot;&gt;+list: List&amp;lt;T&amp;gt;&lt;/span&gt;&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;-var: String&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;-val: Object&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;-funcName: String&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;-body: Object&lt;/span&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;-function: IEvaluator&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="ovnq_b6lXp1vGBs1KSgW-4">
-          <mxGeometry y="26" width="160" height="144" as="geometry" />
+        <mxCell id="ovnq_b6lXp1vGBs1KSgW-5" value="- context: ExecutionContext&lt;br&gt;+ pattern: Pattern&lt;br&gt;+ result: ArithmeticOperationResult" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="ovnq_b6lXp1vGBs1KSgW-4">
+          <mxGeometry y="26" width="170" height="144" as="geometry" />
         </mxCell>
         <mxCell id="ovnq_b6lXp1vGBs1KSgW-6" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="ovnq_b6lXp1vGBs1KSgW-4">
-          <mxGeometry y="170" width="160" height="8" as="geometry" />
+          <mxGeometry y="170" width="170" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="ovnq_b6lXp1vGBs1KSgW-7" value="+ lispInterpreter (environment)&amp;nbsp;&lt;br&gt;+eval(Object expression): Object" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="ovnq_b6lXp1vGBs1KSgW-4">
-          <mxGeometry y="178" width="160" height="82" as="geometry" />
+        <mxCell id="ovnq_b6lXp1vGBs1KSgW-7" value="+ lispInterpreter ()&amp;nbsp;&lt;br&gt;+operate(String expression): IOperationResult&lt;br&gt;-performAritmethixOperation: IOperationResult" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="ovnq_b6lXp1vGBs1KSgW-4">
+          <mxGeometry y="178" width="170" height="92" as="geometry" />
         </mxCell>
         <mxCell id="ovnq_b6lXp1vGBs1KSgW-8" value="" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;" vertex="1" parent="1">
           <mxGeometry x="100" y="570" width="20" height="580" as="geometry" />
