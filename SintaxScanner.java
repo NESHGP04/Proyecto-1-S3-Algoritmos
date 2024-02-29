@@ -1,4 +1,3 @@
-import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,16 +10,14 @@ public class SintaxScanner {
     }
 
     public static int getState(String expression){
-        if(evaluate("ˆ[(][ ]*setq[ ]+[a-z]+[ ]+[0-9]+[ ]*[)]$", expression)){
+        if (evaluate("^[(]\\s*setq\\s+[a-z]+\\s+[0-9]+\\s*[)]$", expression)) {
             return 1;
-        } else if(evaluate ("ˆ[(][ ]*[+][ ]+([a-z]+| [0-9]+)[ ]+([a-z]+[0-9]+)*[)]$", expression)){
+        } else if (evaluate("^[(]\\s*[+]+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+[0-9]+)*[)]$", expression)) {
             return 2;
-        } else if(evaluate("ˆ[(][ ]*[-][ ]+([a-z]+|[0-9]+)[ ]+([a-z]+|[0-9]+)*[)]$", expression)){
+        } else if (evaluate("^[(]\\s*[-]+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)) {
             return 3;
-        }
-        else{
+        } else {
             return -1;
         }
     }
-
 }
