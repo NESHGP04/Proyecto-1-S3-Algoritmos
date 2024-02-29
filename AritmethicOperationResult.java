@@ -16,13 +16,24 @@ public class AritmethicOperationResult implements IOperationResult {
         this.result = result;
     }
 
-    public IOperationResult addOperation(String expression) {
+    public IOperationResult addOperation(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("([a-z]+|\\d+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
         int total = 0;
 
         while (matcher.find()) {
-            total += Integer.parseInt(matcher.group().trim());
+            String token = matcher.group().trim();
+
+            if (Character.isDigit(token.charAt(0))) {
+                total += Integer.parseInt(token);
+            } else {
+                // Si el token es una variable, verifica si está en el contexto
+                if (context.getVariable(token) != null) {
+                    total += Integer.parseInt(context.getVariable(token));
+                } else {
+                    throw new RuntimeException("Variable '" + token + "' no definida");
+                }
+            }
         }
 
         AritmethicOperationResult myResult = new AritmethicOperationResult();
@@ -30,13 +41,24 @@ public class AritmethicOperationResult implements IOperationResult {
         return myResult;
     }
 
-    public IOperationResult substractOperation(String expression) {
+    public IOperationResult substractOperation(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("([a-z]+|\\d+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
         int total = 0;
 
         while (matcher.find()) {
-            total -= Integer.parseInt(matcher.group().trim());
+            String token = matcher.group().trim();
+
+            if (Character.isDigit(token.charAt(0))) {
+                total -= Integer.parseInt(token);
+            } else {
+                // Si el token es una variable, verifica si está en el contexto
+                if (context.getVariable(token) != null) {
+                    total -= Integer.parseInt(context.getVariable(token));
+                } else {
+                    throw new RuntimeException("Variable '" + token + "' no definida");
+                }
+            }
         }
 
         AritmethicOperationResult myResult = new AritmethicOperationResult();

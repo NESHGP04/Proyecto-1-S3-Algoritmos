@@ -9,10 +9,9 @@ public class ExecutionContext {
     }
 
     public String getVariable(String name){
-        return variables.getOrDefault(name, "NIL"); //NILL si variable no existe
+        return variables.getOrDefault(name, "NIL");
     }
 
-    //Clona el contexto actual (funciones)
     public ExecutionContext clone(){
         ExecutionContext newClone = new ExecutionContext();
         newClone.variables.putAll(this.variables);

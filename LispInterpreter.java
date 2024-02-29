@@ -1,20 +1,18 @@
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LispInterpreter {
-    private Map<String, Integer> environment; // Guarda variables del ambiente
+
+    private ExecutionContext context;
 
     public LispInterpreter() {
-        environment = new HashMap<>();
+        context = new ExecutionContext();
     }
 
     public IOperationResult operate(String expression) {
         int state = SintaxScanner.getState(expression);
 
         switch (state) {
-            // Agrega casos adicionales según las necesidades
             case 1:
                 return setVariable(expression);
             case 2:
@@ -26,38 +24,21 @@ public class LispInterpreter {
         }
     }
 
-    public IOperationResult performArithmeticOperation(String expression) {
-        return arithmethicOperation(expression, "+");
+    private IOperationResult setVariable(String expression) {
+        // Implementa la lógica para el caso 1 (setq)
+        // Puedes usar expresiones regulares para extraer el nombre de la variable y su valor
+        // y luego agregarlos al contexto
+        // Ejemplo: (setq variable 42)
+        return null;
     }
 
-    public IOperationResult performSubtractionOperation(String expression) {
-        return arithmethicOperation(expression, "-");
+    private IOperationResult performArithmeticOperation(String expression) {
+        AritmethicOperationResult result = new AritmethicOperationResult();
+        return result.addOperation(expression, context);
     }
 
-public IOperationResult arithmethicOperation(String expression, String operation) {
-    Pattern pattern = Pattern.compile("([a-z]+|\\d+)", Pattern.CASE_INSENSITIVE);
-    Matcher matcher = pattern.matcher(expression);
-
-    int total = 0;
-
-    while (matcher.find()) {
-        String token = matcher.group().trim();
-
-        if (Character.isDigit(token.charAt(0))) {
-            total += Integer.parseInt(token);
-        } else {
-            // Si el token es una variable, verifica si está en el ambiente
-            if (environment.containsKey(token)) {
-                total += environment.get(token);
-            } else {
-                throw new RuntimeException("Variable '" + token + "' no definida");
-            }
-        }
-    }
-
-    AritmethicOperationResult result = new AritmethicOperationResult();
-    result.addResults(operation, " " + total);
-    return result;
+    private IOperationResult performSubtractionOperation(String expression) {
+        AritmethicOperationResult result = new AritmethicOperationResult();
+        return result.substractOperation(expression, context);
     }
 }
-    // Agrega métodos para manejar otras operaciones según sea necesario
