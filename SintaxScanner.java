@@ -12,9 +12,9 @@ public class SintaxScanner {
     public static int getState(String expression){
         if (evaluate("^[(]\\s*setq\\s+[a-z]+\\s+[0-9]+\\s*[)]$", expression)) {
             return 1;
-        } else if (evaluate("^[(]\\s*[+]+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+[0-9]+)*[)]$", expression)) {
+        } else if (evaluate("^[(]\\s*\\+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)) {
             return 2;
-        } else if (evaluate("^[(]\\s*[-]+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)) {
+        } else if (evaluate("^[(]\\s*-\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)) {
             return 3;
         } else {
             return 4;

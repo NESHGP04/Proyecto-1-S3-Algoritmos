@@ -1,4 +1,3 @@
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LispInterpreter {
@@ -16,30 +15,29 @@ public class LispInterpreter {
             case 1:
                 return setVariable(expression);
             case 2:
-                return performArithmeticOperation(expression);
+                return performArithmeticOperation(expression, true);
             case 3:
-                return performSubtractionOperation(expression);
+                return performArithmeticOperation(expression, false);
             case 4:
-                throw new RuntimeException("a");
+                throw new RuntimeException("Invalid expression: " + expression);
             default:
-                throw new RuntimeException("Invalid expression");
+                throw new RuntimeException("Unexpected state");
         }
     }
 
     private IOperationResult setVariable(String expression) {
         Pattern pattern = Pattern.compile("[(]\\s*setq\\s+([a-z]+)\\s+([0-9]+)\\s*[)]", Pattern.CASE_INSENSITIVE);
-        pattern.matcher(expression);
-        
+        // Implementar la lógica para establecer la variable según el patrón
+        // y devolver el resultado adecuado
         return null;
     }
 
-    private IOperationResult performArithmeticOperation(String expression) {
+    private IOperationResult performArithmeticOperation(String expression, boolean isAddition) {
         AritmethicOperationResult result = new AritmethicOperationResult();
-        return result.addOperation(expression, context);
-    }
-
-    private IOperationResult performSubtractionOperation(String expression) {
-        AritmethicOperationResult result = new AritmethicOperationResult();
-        return result.substractOperation(expression, context);
+        if (isAddition) {
+            return result.addOperation(expression, context);
+        } else {
+            return result.substractOperation(expression, context);
+        }
     }
 }
