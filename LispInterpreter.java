@@ -1,5 +1,5 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LispInterpreter {
 
@@ -19,16 +19,17 @@ public class LispInterpreter {
                 return performArithmeticOperation(expression);
             case 3:
                 return performSubtractionOperation(expression);
+            case 4:
+                throw new RuntimeException("a");
             default:
                 throw new RuntimeException("Invalid expression");
         }
     }
 
     private IOperationResult setVariable(String expression) {
-        // Implementa la lógica para el caso 1 (setq)
-        // Puedes usar expresiones regulares para extraer el nombre de la variable y su valor
-        // y luego agregarlos al contexto
-        // Ejemplo: (setq variable 42)
+        Pattern pattern = Pattern.compile("[(]\\s*setq\\s+([a-z]+)\\s+([0-9]+)\\s*[)]", Pattern.CASE_INSENSITIVE);
+        pattern.matcher(expression);
+        
         return null;
     }
 

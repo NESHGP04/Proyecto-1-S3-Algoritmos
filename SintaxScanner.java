@@ -17,7 +17,7 @@ public class SintaxScanner {
         } else if (evaluate("^[(]\\s*[-]+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)) {
             return 3;
         } else {
-            return -1;
+            return 4;
         }
     }
 }
