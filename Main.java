@@ -13,6 +13,7 @@ public class Main {
             opt = scanner.nextLine();
             if(!opt.equals("exit")){
                 myLispInterpreter.operate(opt).performOperation(); //performOperation en ArithmeticOperation no Interprete
+                break;
             }
         } while(!opt.equals("exit"));
 

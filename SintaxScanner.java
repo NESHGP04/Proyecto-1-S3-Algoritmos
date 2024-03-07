@@ -9,20 +9,19 @@ public class SintaxScanner {
         return matcher.find();
     }
 
-    public static int getState(String expression){
+    public static int getState(String expression) {
         if (evaluate("^[(]\\s*setq\\s+[a-z]+\\s+[0-9]+\\s*[)]$", expression)) {
-            return 1;
-        } else if (evaluate("^[(]\\s*\\+\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)){
-            return 2;
-        } else if (evaluate("^[(]\\s*\\-\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)){
-            return 3;
-        } else if (evaluate("^[(]\\s*\\/\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)){
-            return 4;
-        } else if (evaluate("^[(]\\s*\\*\\s+([a-z]+|\\s*[0-9]+)\\s+([a-z]+|[0-9]+)*[)]$", expression)){
-            return 5;
+            return 1; // Expresión de asignación
+        } else if (evaluate("^[(]\\s*\\+\\s+.*[)]$", expression)) {
+            return 2; // Expresión de suma
+        } else if (evaluate("^[(]\\s*\\-\\s+.*[)]$", expression)) {
+            return 3; // Expresión de resta
+        } else if (evaluate("^[(]\\s*\\/\\s+.*[)]$", expression)) {
+            return 4; // Expresión de división
+        } else if (evaluate("^[(]\\s*\\*\\s+.*[)]$", expression)) {
+            return 5; // Expresión de multiplicación
         } else {
-            // Si no coincide con ninguno de los patrones anteriores, la expresión es inválida
-            return -1;
+            return - 1;
         }
     }
 }
