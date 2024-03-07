@@ -1,3 +1,4 @@
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LispInterpreter {
@@ -26,9 +27,17 @@ public class LispInterpreter {
 
     private IOperationResult setVariable(String expression) {
         Pattern pattern = Pattern.compile("[(]\\s*setq\\s+([a-z]+)\\s+([0-9]+)\\s*[)]", Pattern.CASE_INSENSITIVE);
-        // Implementar la lógica para establecer la variable según el patrón
-        // y devolver el resultado adecuado
-        return null;
+        Matcher matcher = pattern.matcher(expression);
+        if (matcher.matches()) {
+            String variable = matcher.group(1);
+            String value = matcher.group(2);
+            context.setVariable(variable, value);
+            AritmethicOperationResult result = new AritmethicOperationResult();
+            result.addResults("asignación", " " + variable + " = " + value);
+            return result;
+        } else {
+            throw new RuntimeException("Expresión de asignación no válida: " + expression);
+        }
     }
 
     private IOperationResult performArithmeticOperation(String expression, int operation) {

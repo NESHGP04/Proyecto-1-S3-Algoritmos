@@ -81,7 +81,7 @@ public class AritmethicOperationResult implements IOperationResult {
     public IOperationResult divisionOperation(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("([a-z]+|\\d+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
-        int total = 0; // Inicializar con el valor neutro de la división (1)
+        int total = 1; // Inicializar con el valor neutro de la división (1)
 
         if (matcher.find()) {
             String firstToken = matcher.group().trim();
