@@ -16,6 +16,22 @@ public class PredicadosOperations implements IPredicadosResult {
         this.result = result;
     }
 
+    //setq
+    public IPredicadosResult setqOp(String expression, ExecutionContext context) {
+        Pattern pattern = Pattern.compile("setq\\s+(\\w+)\\s+(\\d+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(expression);
+
+        if (matcher.find()) {
+            String variable = matcher.group(1);
+            String value = matcher.group(2);
+            context.setVariable(variable, value);
+        }
+
+        PredicadosOperations myResult = new PredicadosOperations();
+        myResult.joinResults("setq", "NIL");
+        return myResult;
+    }
+
     //ATOM
     public IPredicadosResult atomOp(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("(atom\\s+\\S+)", Pattern.CASE_INSENSITIVE);

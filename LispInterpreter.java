@@ -99,15 +99,17 @@ public class LispInterpreter {
     private IPredicadosResult performPredicado(String expression, int operation){
         PredicadosOperations resultP = new PredicadosOperations();
         switch (operation){
-            case 6:// ATOM
+            case 6: //setq
+                return resultP.setqOp(expression, context);
+            case 7:// ATOM
                 return resultP.atomOp(expression, context); //RETURN NO DE TIPO IPredicadosResult
-            case 7: //LIST
+            case 8: //LIST
                 return resultP.listOp(expression, context);
-            case 8: //EQUAL
+            case 9: //EQUAL
                 return resultP.equalOp(expression, context);
-            case 9: //<
+            case 10: //<
                 return resultP.lessThanOp(expression, context);
-            case 10: //>
+            case 11: //>
                 return resultP.greaterThanOp(expression, context);
             default:
                 throw new RuntimeException("Unexpected operation");
