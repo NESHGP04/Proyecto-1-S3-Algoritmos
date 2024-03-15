@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,50 +11,88 @@ public class LispInterpreter {
         context = new ExecutionContext();
     }
 
-    public IOperationResult operate(String expression) {
-        int state = SintaxScanner.getState(expression);
+    public Object operate(String expression) {
+        Stack<Object> stack = new Stack<>();
+        SintaxScanner sintaxScanner = new SintaxScanner();
+        ArrayList<String> elements = sintaxScanner.getState(expression);
 
-        switch (state) {
-            case 1:
-                return setVariable(expression);
-            case 2: // Suma
-            case 3: // Resta
-            case 4: // División
-            case 5: // Multiplicación
-                return performArithmeticOperation(expression, state);
-            default:
-                throw new RuntimeException("Unexpected state: " + state);
+        for (String element : elements) {
+            if (element.equals("(")) {
+                stack.push(element);
+            } else if (isOperand(element)) {
+                stack.push(element);
+            } else if (isOperator(element)) {
+                stack.push(element);
+            } else if (element.equals(")")) {
+                ArrayList<Object> operands = new ArrayList<>();
+                Object operator = null;
+                // Pop elements from the stack until "(" is encountered
+                while (!stack.isEmpty() && !stack.peek().equals("(")) {
+                    if (isOperator(stack.peek().toString())) {
+                        operator = stack.pop();
+                    } else {
+                        operands.add(stack.pop());
+                    }
+                }
+
+                // Remove "(" from the stack
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                } else {
+                    throw new RuntimeException("Expresión no válida: paréntesis no balanceados");
+                }
+
+                if (operator == null) {
+                    throw new RuntimeException("Operador no encontrado");
+                }
+
+                // Perform operation based on operator
+                if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("*")) {
+                    if (operands.size() < 2) {
+                        throw new RuntimeException("Número insuficiente de operandos para el operador: " + operator);
+                    }
+                    Object result = performOperation(operator.toString(), operands.get(0), operands.get(1));
+                    stack.push(result);
+                } else {
+                    throw new RuntimeException("Operador no válido: " + operator);
+                }
+            } else {
+                stack.push(element);
+            }
         }
-    }
 
-    private IOperationResult setVariable(String expression) {
-        Pattern pattern = Pattern.compile("[(]\\s*setq\\s+([a-z]+)\\s+([0-9]+)\\s*[)]", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(expression);
-        if (matcher.matches()) {
-            String variable = matcher.group(1);
-            String value = matcher.group(2);
-            context.setVariable(variable, value);
-            AritmethicOperationResult result = new AritmethicOperationResult();
-            result.addResults("asignación", " " + variable + " = " + value);
-            return result;
+        if (stack.size() == 1 && (stack.peek() instanceof Double || stack.peek() instanceof String)) {
+            return stack.pop();
         } else {
-            throw new RuntimeException("Expresión de asignación no válida: " + expression);
+            throw new RuntimeException("Expresión no válida: " + expression);
         }
     }
 
-    private IOperationResult performArithmeticOperation(String expression, int operation) {
-        AritmethicOperationResult result = new AritmethicOperationResult();
-        switch (operation) {
-            case 2: // Suma
-                return result.addOperation(expression, context);
-            case 3: // Resta
-                return result.substractOperation(expression, context);
-            case 4: // División
-                return result.divisionOperation(expression, context);
-            case 5: // Multiplicación
-                return result.multiplicationOperation(expression, context);
+    private Object performOperation(String operator, Object operand1, Object operand2) {
+        double op1 = Double.parseDouble(operand1.toString());
+        double op2 = Double.parseDouble(operand2.toString());
+        switch (operator) {
+            case "+":
+                return op1 + op2;
+            case "-":
+                return op1 - op2;
+            case "*":
+                return op1 * op2;
+            case "/":
+                if (op2 == 0) {
+                    throw new ArithmeticException("División por cero");
+                }
+                return op1 / op2;
             default:
-                throw new RuntimeException("Unexpected operation");
+                throw new IllegalArgumentException("Operador no reconocido: " + operator);
         }
+    }
+
+    private boolean isOperand(String token) {
+        return token.matches("[a-z]+") || token.matches("\\d+");
+    }
+
+    private boolean isOperator(String token) {
+        return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*");
     }
 }

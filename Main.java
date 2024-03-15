@@ -7,15 +7,19 @@ public class Main {
 
         System.out.println("\n===BIENVENIDO AL INTÉRPRETE DE LISP===");
         System.out.println("\nIngrese una expresión en formato Lisp: ");
-        String opt = " ";
+        String opt;
 
-        do{
+        do {
             opt = scanner.nextLine();
-            if(!opt.equals("exit")){
-                myLispInterpreter.operate(opt).performOperation(); //performOperation en ArithmeticOperation no Interprete
-                break;
+            if (!opt.equals("exit")) {
+                try {
+                    Object result = myLispInterpreter.operate(opt);
+                    System.out.println("Resultado: " + result);
+                } catch (RuntimeException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
             }
-        } while(!opt.equals("exit"));
+        } while (!opt.equals("exit"));
 
         scanner.close();
     }
