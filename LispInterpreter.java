@@ -95,4 +95,22 @@ public class LispInterpreter {
     private boolean isOperator(String token) {
         return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*");
     }
+
+    private IPredicadosResult performPredicado(String expression, int operation){
+        PredicadosOperations resultP = new PredicadosOperations();
+        switch (operation){
+            case 6:// ATOM
+                return resultP.atomOp(expression, context); //RETURN NO DE TIPO IPredicadosResult
+            case 7: //LIST
+                return resultP.listOp(expression, context);
+            case 8: //EQUAL
+                return resultP.equalOp(expression, context);
+            case 9: //<
+                return resultP.lessThanOp(expression, context);
+            case 10: //>
+                return resultP.greaterThanOp(expression, context);
+            default:
+                throw new RuntimeException("Unexpected operation");
+        }
+    }
 }
