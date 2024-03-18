@@ -1,12 +1,18 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.*;
 
 public class PredicadosOperations implements IPredicadosResult {
 
     private String key;
     private String result;
+
+    public PredicadosOperations() {
+    }
+
+    public PredicadosOperations(String result) {
+        this.result = result;
+    }
 
     @Override
     public void performPredicado() {
@@ -18,7 +24,6 @@ public class PredicadosOperations implements IPredicadosResult {
         this.result = result;
     }
 
-    //setq
     public IPredicadosResult setqOp(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("setq\\s+(\\w+)\\s+(\\d+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
@@ -34,15 +39,14 @@ public class PredicadosOperations implements IPredicadosResult {
         return myResult;
     }
 
-    //ATOM
     public IPredicadosResult atomOp(String expression, ExecutionContext context) {
-        Pattern pattern = Pattern.compile("(atom\\s+\\S+)", Pattern.CASE_INSENSITIVE); //^atom\s+\S+$
+        Pattern pattern = Pattern.compile("(atom\\s+\\S+)", Pattern.CASE_INSENSITIVE);
 
         Matcher matcher = pattern.matcher(expression);
         boolean isAtom = false;
 
         if (matcher.find()) {
-            String token = matcher.group().trim();
+            String token = matcher.group(0).trim();
 
             if (token.startsWith("atom")) {
                 String value = token.substring(4).trim();
@@ -57,9 +61,8 @@ public class PredicadosOperations implements IPredicadosResult {
         return myResult;
     }
 
-    //LIST
-public IPredicadosResult listOp(String expression, ExecutionContext context) {
-        Pattern pattern = Pattern.compile("list\\[(.*?)\\]", Pattern.CASE_INSENSITIVE);
+    public IPredicadosResult listOp(String expression, ExecutionContext context) {
+        Pattern pattern = Pattern.compile("\\(([^()]+)\\)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
         boolean isListEqual = false;
 
@@ -94,7 +97,6 @@ public IPredicadosResult listOp(String expression, ExecutionContext context) {
         return myResult;
     }
 
-    //EQUAL
     public IPredicadosResult equalOp(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("equal\\s+(\\w+)\\s+(\\w+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
@@ -115,40 +117,7 @@ public IPredicadosResult listOp(String expression, ExecutionContext context) {
         return myResult;
     }
 
-    //<<
     public IPredicadosResult lessThanOp(String expression, ExecutionContext context) {
-        Pattern pattern = Pattern.compile("(\\w+)\\s*<\\s*(\\w+)", Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(expression);
-        boolean isLessThan = false;
-
-        if (matcher.find()) {
-            String firstValue = matcher.group(1).trim();
-            String secondValue = matcher.group(2).trim();
-
-            int first = evaluateValueLess(firstValue, context);
-            int second = evaluateValueLess(secondValue, context);
-
-            if (first < second) {
-                isLessThan = true;
-            }
-        }
-
-        PredicadosOperations myResult = new PredicadosOperations();
-        myResult.joinResults("<", Boolean.toString(isLessThan));
-        return myResult;
-    }
-
-    private int evaluateValueLess(String value, ExecutionContext context) {
-        if (value.matches("\\d+")) {
-            return Integer.parseInt(value);
-        } else if (context.getVariable(value) != null) {
-            return Integer.parseInt(context.getVariable(value));
-        }
-        return 0; // Si no es un número ni una variable válida, retornamos 0
-    }
-
-    //>>
-    public IPredicadosResult greaterThanOp(String expression, ExecutionContext context) {
         Pattern pattern = Pattern.compile("(\\w+)\\s*<\\s*(\\w+)", Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(expression);
         boolean isLessThan = false;
@@ -166,15 +135,41 @@ public IPredicadosResult listOp(String expression, ExecutionContext context) {
         }
 
         PredicadosOperations myResult = new PredicadosOperations();
-        myResult.joinResults(">", Boolean.toString(isLessThan));
+        myResult.joinResults("<", Boolean.toString(isLessThan));
+        return myResult;
+    }
+
+    public IPredicadosResult greaterThanOp(String expression, ExecutionContext context) {
+        Pattern pattern = Pattern.compile("(\\w+)\\s*>\\s*(\\w+)", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(expression);
+        boolean isGreaterThan = false;
+
+        if (matcher.find()) {
+            String firstValue = matcher.group(1).trim();
+            String secondValue = matcher.group(2).trim();
+
+            int first = evaluateValue(firstValue, context);
+            int second = evaluateValue(secondValue, context);
+
+            if (first > second) {
+                isGreaterThan = true;
+            }
+        }
+
+        PredicadosOperations myResult = new PredicadosOperations();
+        myResult.joinResults(">", Boolean.toString(isGreaterThan));
         return myResult;
     }
 
     private int evaluateValue(String value, ExecutionContext context) {
-        if (value.matches("\\d+")) {
-            return Integer.parseInt(value);
-        } else if (context.getVariable(value) != null) {
-            return Integer.parseInt(context.getVariable(value));
+        try {
+            if (value.matches("\\d+")) {
+                return Integer.parseInt(value);
+            } else if (context.getVariable(value) != null && context.getVariable(value).matches("\\d+")) {
+                return Integer.parseInt(context.getVariable(value));
+            }
+        } catch (NumberFormatException e) {
+            // En caso de que la conversión a entero falle, simplemente retornamos 0
         }
         return 0; // Si no es un número ni una variable válida, retornamos 0
     }

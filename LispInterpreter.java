@@ -93,7 +93,7 @@ public class LispInterpreter {
     }
 
     private boolean isOperator(String token) {
-        return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*");
+        return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*"); //< y > sirven?
     }
 
     private IPredicadosResult performPredicado(String expression, int operation){
@@ -102,7 +102,7 @@ public class LispInterpreter {
             case 6: //setq
                 return resultP.setqOp(expression, context);
             case 7:// ATOM
-                return resultP.atomOp(expression, context); //RETURN NO DE TIPO IPredicadosResult
+                return resultP.atomOp(expression, context);
             case 8: //LIST
                 return resultP.listOp(expression, context);
             case 9: //EQUAL
@@ -112,7 +112,8 @@ public class LispInterpreter {
             case 11: //>
                 return resultP.greaterThanOp(expression, context);
             default:
-                throw new RuntimeException("Unexpected operation");
+                //throw new RuntimeException("Unexpected operation");
         }
+        return null;
     }
 }

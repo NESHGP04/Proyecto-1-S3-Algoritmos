@@ -15,6 +15,7 @@ public class Main {
                 try {
                     Object result = myLispInterpreter.operate(opt);
                     System.out.println("Resultado: " + result);
+                    System.out.println("\nIngrese otra expresión");
                 } catch (RuntimeException e) {
                     System.out.println("Error: " + e.getMessage());
                 }
