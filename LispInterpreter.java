@@ -75,14 +75,14 @@ public class LispInterpreter {
             case "+":
                 return op1 + op2;
             case "-":
-                return op1 - op2;
+                return op2 - op1;
             case "*":
                 return op1 * op2;
             case "/":
                 if (op2 == 0) {
                     throw new ArithmeticException("División por cero");
                 }
-                return op1 / op2;
+                return op2 / op1;
             default:
                 throw new IllegalArgumentException("Operador no reconocido: " + operator);
         }
