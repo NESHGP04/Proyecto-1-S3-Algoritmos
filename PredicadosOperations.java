@@ -122,7 +122,7 @@ public class PredicadosOperations implements IPredicadosResult {
     }
 
     public IPredicadosResult lessThanOp(String expression, ExecutionContext context) {
-        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?", Pattern.CASE_INSENSITIVE); //"(\\w+)\\s*<\\s*(\\w+)"
+        Pattern pattern = Pattern.compile("(\\w+)\\s*<\\s*(\\w+)", Pattern.CASE_INSENSITIVE); //"(\\w+)\\s*<\\s*(\\w+)"
         Matcher matcher = pattern.matcher(expression);
         boolean isLessThan = false;
 
