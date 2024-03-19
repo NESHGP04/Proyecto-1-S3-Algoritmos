@@ -10,30 +10,9 @@ public class SintaxScanner {
         return matcher.find();
     }
 
-    // public static int getState(String expression) {
-    //     if (evaluate("^[(]\\s*setq\\s+[a-z]+\\s+[0-9]+\\s*[)]$", expression)) {
-    //         return 1; // Expresión de asignación
-    //     } else if (evaluate("^[(]\\s*\\+\\s+.*[)]$", expression)) {
-    //         return 2; // Expresión de suma
-    //     } else if (evaluate("^[(]\\s*\\-\\s+.*[)]$", expression)) {
-    //         return 3; // Expresión de resta
-    //     } else if (evaluate("^[(]\\s*\\/\\s+.*[)]$", expression)) {
-    //         return 4; // Expresión de división
-    //     } else if (evaluate("^[(]\\s*\\*\\s+.*[)]$", expression)) {
-    //         return 5; // Expresión de multiplicación
-    //     } else if (expression.startsWith("(")) {
-    //         // Si la expresión comienza con un paréntesis, es una expresión anidada
-    //         // Evaluar el tipo de expresión anidada llamando recursivamente a getState
-    //         String innerExpression = expression.substring(1, expression.length() - 1);
-    //         return getState(innerExpression);
-    //     } else {
-    //         return -1;
-    //     }
-    // }
-
     public ArrayList<String> getState(String expression) {
         ArrayList<String> tokens = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\"[^\"]\"|\\(|\\)|\\w+|[+\\-/()<>=]");
+        Pattern pattern = Pattern.compile("\"[^\"]*\"|\\(|\\)|\\w+|[+\\-/*()]");
         Matcher matcher = pattern.matcher(expression);
 
         while (matcher.find()) {

@@ -47,7 +47,7 @@ public class LispInterpreter {
                 }
 
                 // Perform operation based on operator
-                if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("x")) {
+                if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("*")) {
                     if (operands.size() < 2) {
                         throw new RuntimeException("Número insuficiente de operandos para el operador: " + operator);
                     }
@@ -76,7 +76,7 @@ public class LispInterpreter {
                 return op1 + op2;
             case "-":
                 return op2 - op1;
-            case "x":
+            case "*":
                 return op1 * op2;
             case "/":
                 if (op1 == 0) {
@@ -93,7 +93,7 @@ public class LispInterpreter {
     }
 
     private boolean isOperator(String token) {
-        return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("x"); //< y > sirven?
+        return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*"); //< y > sirven?
     }
 
     private IPredicadosResult performPredicado(String expression, int operation){
