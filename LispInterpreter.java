@@ -79,7 +79,7 @@ public class LispInterpreter {
             case "*":
                 return op1 * op2;
             case "/":
-                if (op2 == 0) {
+                if (op1 == 0) {
                     throw new ArithmeticException("División por cero");
                 }
                 return op2 / op1;
