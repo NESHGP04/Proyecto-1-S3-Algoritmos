@@ -1,6 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.*;
 
 public class PredicadosOperations implements IPredicadosResult {
 
@@ -40,13 +41,14 @@ public class PredicadosOperations implements IPredicadosResult {
     }
 
     public IPredicadosResult atomOp(String expression, ExecutionContext context) {
-        Pattern pattern = Pattern.compile("(atom\\s+\\S+)", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("(atom\\s+\\S+)", Pattern.CASE_INSENSITIVE); //"(\\[a-zA-Z]+\\)" //(atom\\s+\\S+)
 
         Matcher matcher = pattern.matcher(expression);
         boolean isAtom = false;
 
         if (matcher.find()) {
             String token = matcher.group(0).trim();
+            System.out.print(token);
 
             if (token.startsWith("atom")) {
                 String value = token.substring(4).trim();
@@ -114,11 +116,13 @@ public class PredicadosOperations implements IPredicadosResult {
 
         PredicadosOperations myResult = new PredicadosOperations();
         myResult.joinResults("equal", Boolean.toString(isEqual));
+
+
         return myResult;
     }
 
     public IPredicadosResult lessThanOp(String expression, ExecutionContext context) {
-        Pattern pattern = Pattern.compile("(\\w+)\\s*<\\s*(\\w+)", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("-?\\d+(\\.\\d+)?", Pattern.CASE_INSENSITIVE); //"(\\w+)\\s*<\\s*(\\w+)"
         Matcher matcher = pattern.matcher(expression);
         boolean isLessThan = false;
 

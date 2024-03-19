@@ -12,7 +12,7 @@ public class SintaxScanner {
 
     public ArrayList<String> getState(String expression) {
         ArrayList<String> tokens = new ArrayList<>();
-        Pattern pattern = Pattern.compile("\"[^\"]*\"|\\(|\\)|\\w+|[+\\-/*()]");
+        Pattern pattern = Pattern.compile("\"[^\"]*\"|\\(|\\)|\\w+|[+\\-/*()]");//"\"[^\"]*\"|\\(|\\)|\\w+|[+\\-/*()]"
         Matcher matcher = pattern.matcher(expression);
 
         while (matcher.find()) {
