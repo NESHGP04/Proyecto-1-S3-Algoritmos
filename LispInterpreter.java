@@ -15,78 +15,73 @@ public class LispInterpreter {
         Stack<Object> stack = new Stack<>();
         SintaxScanner sintaxScanner = new SintaxScanner();
         ArrayList<String> elements = sintaxScanner.getState(expression);
-
+    
         for (String element : elements) {
-            if (element.equals("(")) {
-                stack.push(element);
-            } else if (isOperand(element)) {
-                stack.push(element);
-            } else if (isOperator(element)) {
-                stack.push(element);
-            } else if (element.equals(")")) {
-                ArrayList<Object> operands = new ArrayList<>();
-                Object operator = null;
-                // Pop elements from the stack until "(" is encountered
-                while (!stack.isEmpty() && !stack.peek().equals("(")) {
-                    if (isOperator(stack.peek().toString())) {
-                        operator = stack.pop();
-                    } else {
-                        operands.add(stack.pop());
+            switch (element) {
+                case "(":
+                    // Simplemente apilar el paréntesis de apertura
+                    stack.push(element);
+                    break;
+                case ")":
+                    ArrayList<Object> operands = new ArrayList<>();
+                    while (!stack.isEmpty() && !stack.peek().equals("(")) {
+                        operands.add(0, stack.pop()); // Añadir al inicio para mantener el orden
                     }
-                }
-
-                // Remove "(" from the stack
-                if (!stack.isEmpty()) {
-                    stack.pop();
-                } else {
-                    throw new RuntimeException("Expresión no válida: paréntesis no balanceados");
-                }
-
-                if (operator == null) {
-                    throw new RuntimeException("Operador no encontrado");
-                }
-
-                // Perform operation based on operator
-                if (operator.equals("+") || operator.equals("-") || operator.equals("/") || operator.equals("*")) {
-                    if (operands.size() < 2) {
-                        throw new RuntimeException("Número insuficiente de operandos para el operador: " + operator);
+                    if (stack.isEmpty()) {
+                        throw new RuntimeException("Expresión no válida: paréntesis no balanceados");
                     }
-                    Object result = performOperation(operator.toString(), operands.get(0), operands.get(1));
-                    stack.push(result);
-                } else {
-                    throw new RuntimeException("Operador no válido: " + operator);
-                }
-            } else {
-                stack.push(element);
+                    stack.pop(); // Quitar el "(" de la pila
+                    Object operator = operands.remove(0); // El operador es el primer elemento
+                    stack.push(performOperation(operator.toString(), operands));
+                    break;
+                default:
+                    stack.push(element); // Operandos y operadores
+                    break;
             }
         }
-
-        if (stack.size() == 1 && (stack.peek() instanceof Double || stack.peek() instanceof String)) {
+    
+        if (stack.size() == 1) {
             return stack.pop();
         } else {
             throw new RuntimeException("Expresión no válida: " + expression);
         }
     }
-
-    private Object performOperation(String operator, Object operand1, Object operand2) {
-        double op1 = Double.parseDouble(operand1.toString());
-        double op2 = Double.parseDouble(operand2.toString());
+    
+    private Object performOperation(String operator, ArrayList<Object> operands) {
+        // Supongamos que todos los operandos son Double para simplificar
+        double result = 0;
         switch (operator) {
             case "+":
-                return op1 + op2;
-            case "-":
-                return op2 - op1;
-            case "*":
-                return op1 * op2;
-            case "/":
-                if (op1 == 0) {
-                    throw new ArithmeticException("División por cero");
+                for (Object operand : operands) {
+                    result += Double.parseDouble(operand.toString());
                 }
-                return op2 / op1;
+                return result;
+            case "-":
+                result = Double.parseDouble(operands.remove(0).toString());
+                for (Object operand : operands) {
+                    result -= Double.parseDouble(operand.toString());
+                }
+                return result;
+            case "*":
+                result = 1; // Valor neutro de la multiplicación
+                for (Object operand : operands) {
+                    result *= Double.parseDouble(operand.toString());
+                }
+                return result;
+            case "/":
+                if (operands.size() < 2) throw new IllegalArgumentException("División necesita al menos dos operandos");
+                result = Double.parseDouble(operands.remove(0).toString());
+                for (Object operand : operands) {
+                    double divisor = Double.parseDouble(operand.toString());
+                    if (divisor == 0) throw new ArithmeticException("División por cero");
+                    result /= divisor;
+                }
+                return result;
             default:
                 throw new IllegalArgumentException("Operador no reconocido: " + operator);
         }
     }
+    
 
     private boolean isOperand(String token) {
         return token.matches("[a-z]+") || token.matches("\\d+");
