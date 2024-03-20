@@ -1,5 +1,6 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class LispInterpreter {
@@ -7,7 +8,7 @@ public class LispInterpreter {
     private ExecutionContext context;
 
     public LispInterpreter() {
-        context = new ExecutionContext();
+        this.context = new ExecutionContext();
     }
 
     public Object operate(String expression) {
@@ -28,29 +29,33 @@ public class LispInterpreter {
                     if (stack.isEmpty()) {
                         throw new IllegalArgumentException("Expresión no válida: paréntesis no balanceados");
                     }
-                    stack.pop();
-                    Object operator = operands.remove(0);
+                    stack.pop(); // Remove the "(" from the stack
+                    Object operator = operands.remove(0); // Get the operator
                     if (isOperator(operator.toString())) {
+                        // Perform arithmetic operations
                         stack.push(performOperation(operator.toString(), operands));
                     } else if (isPredicateOperator(operator.toString())) {
-                        int operationCode = getOperationCode(operator.toString());
-                        stack.push(performPredicate(expression, operationCode));
+                        // Correctly perform predicate operations
+                        stack.push(performPredicate(operator.toString(), operands, context)); // Correctly pass the operator, operands, and context
                     } else {
                         throw new IllegalArgumentException("Operador o predicado no reconocido: " + operator);
                     }
                     break;
                 default:
-                    stack.push(element);
+                    stack.push(element); // Push other elements (operands) onto the stack
                     break;
             }
         }
     
         if (stack.size() == 1) {
-            return stack.pop();
+            return stack.pop(); // Return the result of the Lisp expression
         } else {
             throw new IllegalArgumentException("Expresión no válida: " + expression);
         }
     }
+
+    // Include previously shown implementations for getOperationCode, isPredicateOperator, performOperation, performPredicate, isOperand, isOperator here
+
     
     private int getOperationCode(String operator) {
         switch (operator) {
@@ -72,9 +77,9 @@ public class LispInterpreter {
     }
     
     private boolean isPredicateOperator(String token) {
-        return token.equals("atom") || token.equals("list") || token.equals("=") ||
-                token.equals("<") || token.equals(">") || token.equals("setq");
-    }
+        return token.equals("atom") || token.equals("list") || token.equals("quote") ||
+               token.equals("equal") || token.equals("<") || token.equals(">") || token.equals("setq");
+    }    
     
     private Object performOperation(String operator, ArrayList<Object> operands) {
         // Use BigDecimal for precise arithmetic
@@ -111,44 +116,38 @@ public class LispInterpreter {
         }
     }
 
-    private IPredicadosResult performPredicate(String expression, int operation) {
-        PredicadosOperations resultP = new PredicadosOperations();
-        
-        switch (operation) {
-            case 6: // setq
-                IPredicadosResult resultI = resultP.setqOp(expression, context);
-                resultI.performPredicado();
-                return resultI;
-            case 7: // ATOM
-                IPredicadosResult resultA = resultP.atomOp(expression, context);
-                resultA.performPredicado();
-                return resultA;
-            case 8: // LIST
-                IPredicadosResult resultL = resultP.listOp(expression, context);
-                resultL.performPredicado();
-                return resultL;
-            case 9: // EQUAL
-                IPredicadosResult resultE = resultP.equalOp(expression, context);
-                resultE.performPredicado();
-                return resultE;
-            case 10: // <
-                IPredicadosResult resultM = resultP.lessThanOp(expression, context);
-                resultM.performPredicado();
-                return resultM;
-            case 11: // >
-                IPredicadosResult resultN = resultP.listOp(expression, context);
-                resultN.performPredicado();
-                return resultN;
-            default:
-                throw new IllegalArgumentException("Operación no reconocida: " + operation);
-        }
+    private Object performPredicate(String operator, List<Object> operands, ExecutionContext context) {
+    PredicadosOperations operations = new PredicadosOperations();
+    switch (operator) {
+        case "setq":
+            return operations.setqOp(operands.get(0).toString(), operands.get(1).toString(), context).performPredicado();
+        case "atom":
+            return operations.atomOp(operands.get(0).toString(), context).performPredicado();
+        case "list":
+            return operations.listOp(operands).performPredicado();
+            case "quote":
+            // Assuming the entire list after "quote" is a single operand
+            return operations.quoteOp(operands).performPredicado();
+        case "equal":
+            // Assumes operands are correctly parsed and ready to compare
+            return operations.equalOp(operands.get(0), operands.get(1)).performPredicado();
+        case "<":
+            // Assumes operands are numbers; you may need conversion or validation
+            return operations.lessThanOp((Number) operands.get(0), (Number) operands.get(1)).performPredicado();
+        case ">":
+            // Assumes operands are numbers; you may need conversion or validation
+            return operations.greaterThanOp((Number) operands.get(0), (Number) operands.get(1)).performPredicado();
+        default:
+            throw new IllegalArgumentException("Unknown predicate: " + operator);
     }
+}
 
     private boolean isOperand(String token) {
         return token.matches("[a-z]+") || token.matches("\\d+");
     }
 
     private boolean isOperator(String token) {
-        return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*"); //< y > sirven?
+        return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")
+               || token.equals("<") || token.equals(">");
     }
 }
