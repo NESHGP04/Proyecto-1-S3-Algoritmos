@@ -1,10 +1,8 @@
-/**
- * The IPredicadosResult interface represents a result of a predicate operation.
- * It defines a method to perform the predicate.
- */
 public interface IPredicadosResult {
     /**
-     * Performs the predicate operation.
+     * Performs the predicate operation and returns the result.
+     * @return The result of the predicate operation.
      */
-    public void performPredicado();
+    Object performPredicado();
 }
+
