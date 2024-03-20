@@ -1,7 +1,6 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LispInterpreter {
 
@@ -13,29 +12,35 @@ public class LispInterpreter {
 
     public Object operate(String expression) {
         Stack<Object> stack = new Stack<>();
-        SintaxScanner sintaxScanner = new SintaxScanner();
-        ArrayList<String> elements = sintaxScanner.getState(expression);
+        SintaxScanner syntaxScanner = new SintaxScanner();
+        ArrayList<String> elements = syntaxScanner.getState(expression);
     
         for (String element : elements) {
             switch (element) {
                 case "(":
-                    // Simplemente apilar el paréntesis de apertura
                     stack.push(element);
                     break;
                 case ")":
                     ArrayList<Object> operands = new ArrayList<>();
                     while (!stack.isEmpty() && !stack.peek().equals("(")) {
-                        operands.add(0, stack.pop()); // Añadir al inicio para mantener el orden
+                        operands.add(0, stack.pop());
                     }
                     if (stack.isEmpty()) {
-                        throw new RuntimeException("Expresión no válida: paréntesis no balanceados");
+                        throw new IllegalArgumentException("Expresión no válida: paréntesis no balanceados");
                     }
-                    stack.pop(); // Quitar el "(" de la pila
-                    Object operator = operands.remove(0); // El operador es el primer elemento
-                    stack.push(performOperation(operator.toString(), operands));
+                    stack.pop();
+                    Object operator = operands.remove(0);
+                    if (isOperator(operator.toString())) {
+                        stack.push(performOperation(operator.toString(), operands));
+                    } else if (isPredicateOperator(operator.toString())) {
+                        int operationCode = getOperationCode(operator.toString());
+                        stack.push(performPredicate(expression, operationCode));
+                    } else {
+                        throw new IllegalArgumentException("Operador o predicado no reconocido: " + operator);
+                    }
                     break;
                 default:
-                    stack.push(element); // Operandos y operadores
+                    stack.push(element);
                     break;
             }
         }
@@ -43,45 +48,101 @@ public class LispInterpreter {
         if (stack.size() == 1) {
             return stack.pop();
         } else {
-            throw new RuntimeException("Expresión no válida: " + expression);
+            throw new IllegalArgumentException("Expresión no válida: " + expression);
         }
     }
     
+    private int getOperationCode(String operator) {
+        switch (operator) {
+            case "atom":
+                return 7;
+            case "list":
+                return 8;
+            case "=":
+                return 9;
+            case "<":
+                return 10;
+            case ">":
+                return 11;
+            case "setq":
+                return 6;
+            default:
+                throw new IllegalArgumentException("Operador no reconocido: " + operator);
+        }
+    }
+    
+    private boolean isPredicateOperator(String token) {
+        return token.equals("atom") || token.equals("list") || token.equals("=") ||
+                token.equals("<") || token.equals(">") || token.equals("setq");
+    }
+    
     private Object performOperation(String operator, ArrayList<Object> operands) {
-        // Supongamos que todos los operandos son Double para simplificar
-        double result = 0;
+        // Use BigDecimal for precise arithmetic
+        BigDecimal result = BigDecimal.ZERO;
         switch (operator) {
             case "+":
                 for (Object operand : operands) {
-                    result += Double.parseDouble(operand.toString());
+                    result = result.add(new BigDecimal(operand.toString()));
                 }
                 return result;
             case "-":
-                result = Double.parseDouble(operands.remove(0).toString());
+                result = new BigDecimal(operands.remove(0).toString());
                 for (Object operand : operands) {
-                    result -= Double.parseDouble(operand.toString());
+                    result = result.subtract(new BigDecimal(operand.toString()));
                 }
                 return result;
             case "*":
-                result = 1; // Valor neutro de la multiplicación
+                result = BigDecimal.ONE;
                 for (Object operand : operands) {
-                    result *= Double.parseDouble(operand.toString());
+                    result = result.multiply(new BigDecimal(operand.toString()));
                 }
                 return result;
             case "/":
                 if (operands.size() < 2) throw new IllegalArgumentException("División necesita al menos dos operandos");
-                result = Double.parseDouble(operands.remove(0).toString());
+                result = new BigDecimal(operands.remove(0).toString());
                 for (Object operand : operands) {
-                    double divisor = Double.parseDouble(operand.toString());
-                    if (divisor == 0) throw new ArithmeticException("División por cero");
-                    result /= divisor;
+                    BigDecimal divisor = new BigDecimal(operand.toString());
+                    if (divisor.equals(BigDecimal.ZERO)) throw new ArithmeticException("División por cero");
+                    result = result.divide(divisor);
                 }
                 return result;
             default:
                 throw new IllegalArgumentException("Operador no reconocido: " + operator);
         }
     }
-    
+
+    private IPredicadosResult performPredicate(String expression, int operation) {
+        PredicadosOperations resultP = new PredicadosOperations();
+        
+        switch (operation) {
+            case 6: // setq
+                IPredicadosResult resultI = resultP.setqOp(expression, context);
+                resultI.performPredicado();
+                return resultI;
+            case 7: // ATOM
+                IPredicadosResult resultA = resultP.atomOp(expression, context);
+                resultA.performPredicado();
+                return resultA;
+            case 8: // LIST
+                IPredicadosResult resultL = resultP.listOp(expression, context);
+                resultL.performPredicado();
+                return resultL;
+            case 9: // EQUAL
+                IPredicadosResult resultE = resultP.equalOp(expression, context);
+                resultE.performPredicado();
+                return resultE;
+            case 10: // <
+                IPredicadosResult resultM = resultP.lessThanOp(expression, context);
+                resultM.performPredicado();
+                return resultM;
+            case 11: // >
+                IPredicadosResult resultN = resultP.listOp(expression, context);
+                resultN.performPredicado();
+                return resultN;
+            default:
+                throw new IllegalArgumentException("Operación no reconocida: " + operation);
+        }
+    }
 
     private boolean isOperand(String token) {
         return token.matches("[a-z]+") || token.matches("\\d+");
@@ -89,26 +150,5 @@ public class LispInterpreter {
 
     private boolean isOperator(String token) {
         return token.equals("+") || token.equals("-") || token.equals("/") || token.equals("*"); //< y > sirven?
-    }
-
-    private IPredicadosResult performPredicado(String expression, int operation){
-        PredicadosOperations resultP = new PredicadosOperations();
-        switch (operation){
-            case 6: //setq
-                return resultP.setqOp(expression, context);
-            case 7:// ATOM
-                return resultP.atomOp(expression, context);
-            case 8: //LIST
-                return resultP.listOp(expression, context);
-            case 9: //EQUAL
-                return resultP.equalOp(expression, context);
-            case 10: //<
-                return resultP.lessThanOp(expression, context);
-            case 11: //>
-                return resultP.greaterThanOp(expression, context);
-            default:
-                //throw new RuntimeException("Unexpected operation");
-        }
-        return null;
     }
 }
