@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * The PredicadosOperations class represents a set of operations related to predicates.
  * It implements the IPredicadosResult interface.
  * This class provides methods for performing various predicate operations such as setq, atom, list, equal, less than, and greater than.
- 1*/
+1*/
 public class PredicadosOperations implements IPredicadosResult {
 
     private String key;
