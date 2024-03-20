@@ -3,6 +3,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The PredicadosOperations class represents a set of operations related to predicates.
+ * It implements the IPredicadosResult interface.
+ * This class provides methods for performing various predicate operations such as setq, atom, list, equal, less than, and greater than.
+ */
 public class PredicadosOperations implements IPredicadosResult {
 
     private String key;

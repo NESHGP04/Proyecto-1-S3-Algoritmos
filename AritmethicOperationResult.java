@@ -1,6 +1,14 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Represents the result of an arithmetic operation.
+ * Implements the {@link IOperationResult} interface.
+ */
+/**
+ * Represents the result of an arithmetic operation.
+ * Implements the {@link IOperationResult} interface.
+ */
 public class AritmethicOperationResult implements IOperationResult {
 
     private String key;
