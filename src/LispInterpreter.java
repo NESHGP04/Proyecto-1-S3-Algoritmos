@@ -11,6 +11,13 @@ public class LispInterpreter {
         this.context = new ExecutionContext();
     }
 
+    /**
+     * Evalúa una expresión Lisp dada y devuelve el resultado.
+     * 
+     * @param expression La expresión Lisp a evaluar.
+     * @return El resultado de la expresión Lisp.
+     * @throws IllegalArgumentException Si la expresión es inválida.
+     */
     public Object operate(String expression) {
         Stack<Object> stack = new Stack<>();
         SintaxScanner syntaxScanner = new SintaxScanner();
@@ -53,34 +60,21 @@ public class LispInterpreter {
             throw new IllegalArgumentException("Expresión no válida: " + expression);
         }
     }
-
-    // Include previously shown implementations for getOperationCode, isPredicateOperator, performOperation, performPredicate, isOperand, isOperator here
-
-    
-    private int getOperationCode(String operator) {
-        switch (operator) {
-            case "atom":
-                return 7;
-            case "list":
-                return 8;
-            case "=":
-                return 9;
-            case "<":
-                return 10;
-            case ">":
-                return 11;
-            case "setq":
-                return 6;
-            default:
-                throw new IllegalArgumentException("Operador no reconocido: " + operator);
-        }
-    }
     
     private boolean isPredicateOperator(String token) {
         return token.equals("atom") || token.equals("list") || token.equals("quote") ||
                token.equals("equal") || token.equals("<") || token.equals(">") || token.equals("setq");
     }    
     
+        /**
+     * Realiza una operación aritmética dada con los operandos proporcionados.
+     * 
+     * @param operator El operador aritmético.
+     * @param operands Los operandos sobre los cuales realizar la operación.
+     * @return El resultado de la operación aritmética.
+     * @throws IllegalArgumentException Si el operador no es reconocido o si la división requiere al menos dos operandos.
+     * @throws ArithmeticException Si se intenta realizar una división por cero.
+     */
     private Object performOperation(String operator, ArrayList<Object> operands) {
         // Use BigDecimal for precise arithmetic
         BigDecimal result = BigDecimal.ZERO;
@@ -116,6 +110,11 @@ public class LispInterpreter {
         }
     }
 
+    /**
+     * The root class in the Java class hierarchy. All classes in Java are subclasses of Object.
+     * This class provides basic methods that are inherited by all other classes, such as equals(),
+     * hashCode(), and toString().
+     */
     private Object performPredicate(String operator, List<Object> operands, ExecutionContext context) {
     PredicadosOperations operations = new PredicadosOperations();
     switch (operator) {
@@ -146,6 +145,12 @@ public class LispInterpreter {
         return token.matches("[a-z]+") || token.matches("\\d+");
     }
 
+    /**
+     * Checks if a given token is an operator.
+     *
+     * @param token the token to be checked
+     * @return true if the token is an operator, false otherwise
+     */
     private boolean isOperator(String token) {
         return token.equals("+") || token.equals("-") || token.equals("*") || token.equals("/")
                || token.equals("<") || token.equals(">");

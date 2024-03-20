@@ -1,5 +1,11 @@
 import java.util.List;
 
+/**
+ * The PredicadosOperations class provides operations for working with predicates.
+ * Predicates are functions that return a boolean value based on certain conditions.
+ * This class contains methods for various predicate operations such as setting variables,
+ * checking if a token is an atom, working with lists, and comparing values.
+ */
 public class PredicadosOperations {
 
     public IPredicadosResult setqOp(String variable, String value, ExecutionContext context) {
